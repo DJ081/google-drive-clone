@@ -101,7 +101,7 @@ export default function AddFileButton({ currentFolder }) {
             style={{
               position: "absolute",
               bottom: "1rem",
-              rigth: "1rem",
+              right: "1rem",
               maxWidth: "250px",
             }}
           >

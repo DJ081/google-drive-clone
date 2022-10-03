@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { database } from "../firebase";
 
@@ -47,7 +47,6 @@ export function useFolder(folderId = null, folder = null) {
     childFolders: [],
     childFiles: [],
   });
-
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -61,6 +60,7 @@ export function useFolder(folderId = null, folder = null) {
         payload: { folder: ROOT_FOLDER },
       });
     }
+
     database.folders
       .doc(folderId)
       .get()
@@ -92,16 +92,18 @@ export function useFolder(folderId = null, folder = null) {
   }, [folderId, currentUser]);
 
   useEffect(() => {
-    return database.files
-      .where("folderId", "==", folderId)
-      .where("userId", "==", currentUser.uid)
-      .orderBy("createdAt")
-      .onSnapshot((snapshot) => {
-        dispatch({
-          type: ACTIONS.SET_CHILD_FILES,
-          payload: { childFiles: snapshot.docs.map(database.formatDoc) },
-        });
-      });
+    return (
+      database.files
+        .where("folderId", "==", folderId)
+        .where("userId", "==", currentUser.uid)
+        // .orderBy("createdAt")
+        .onSnapshot((snapshot) => {
+          dispatch({
+            type: ACTIONS.SET_CHILD_FILES,
+            payload: { childFiles: snapshot.docs.map(database.formatDoc) },
+          });
+        })
+    );
   }, [folderId, currentUser]);
 
   return state;
